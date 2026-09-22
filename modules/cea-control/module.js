@@ -2,6 +2,8 @@ import { lessons, glossary } from "./lessons.js";
 
 export default {
   id: "cea-control",
+  status: "published",
+  visibility: "listed",
   number: "01",
   title: "The Evolution of CEA Control",
   shortTitle: "CEA control",

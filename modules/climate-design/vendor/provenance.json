@@ -1,0 +1,19 @@
+{
+  "library": "PsychroLib",
+  "version": "2.5.0",
+  "upstreamCommit": "a42717d24ed08534642d6caf7dcbbf72b9510bea",
+  "upstreamSourceUrl": "https://raw.githubusercontent.com/psychrometrics/psychrolib/a42717d24ed08534642d6caf7dcbbf72b9510bea/src/js/psychrolib.js",
+  "retrievedAt": "2026-09-22T17:40:06.459Z",
+  "source": {
+    "url": "https://raw.githubusercontent.com/vhark/cea-psychrometric-site-evaluator/main/vendor/psychrolib.js",
+    "lastFileCommit": "cc6eb700c1236520942e2e6039eefb1a7533a2cc",
+    "pinnedUrl": "https://raw.githubusercontent.com/vhark/cea-psychrometric-site-evaluator/cc6eb700c1236520942e2e6039eefb1a7533a2cc/vendor/psychrolib.js",
+    "commitEvidenceUrl": "https://api.github.com/repos/vhark/cea-psychrometric-site-evaluator/commits?path=vendor%2Fpsychrolib.js&per_page=1",
+    "sha256": "b4dc0c969f47551cd3bc595b1c054f0e053db4903ebed65f6ea69aada03bbeb9",
+    "notes": "Verbatim evaluator ES-module adaptation; default instance selects SI. Equations unchanged locally."
+  },
+  "license": {
+    "url": "https://raw.githubusercontent.com/psychrometrics/psychrolib/a42717d24ed08534642d6caf7dcbbf72b9510bea/LICENSE.txt",
+    "sha256": "3372ab6db04ab898605cd8a4c47eee35e668d14ca05481f00107239be0e3b46e"
+  }
+}

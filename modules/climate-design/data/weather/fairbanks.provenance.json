@@ -1,0 +1,12 @@
+{
+  "sourceUrl": "https://archive-api.open-meteo.com/v1/archive?latitude=64.8378&longitude=-147.7164&start_date=2024-01-01&end_date=2025-01-01&hourly=temperature_2m%2Crelative_humidity_2m%2Csurface_pressure%2Cshortwave_radiation&timezone=UTC&models=era5&temperature_unit=celsius&timeformat=iso8601&cell_selection=land",
+  "retrievedAt": "2026-09-22T17:43:03.024Z",
+  "sha256": "e6dd0691b9147512214057c4ac7042faa558975f80273077b9e0cbde6ee9213e",
+  "hashScope": "Exact uncompressed HTTP response body bytes, before JSON parsing",
+  "rawBytes": 335695,
+  "gzipBytes": 61273,
+  "rawFile": "weather/fairbanks.json.gz",
+  "requestedStartDate": "2024-01-01",
+  "requestedEndDateInclusive": "2025-01-01",
+  "boundaryNote": "Extra day retained unchanged in raw response; only midnight on 2025-01-01 contributes the final 2024 preceding-hour solar interval."
+}

@@ -1,6 +1,7 @@
 import ceaControl from "../modules/cea-control/module.js";
+import climateDesign from "../modules/climate-design/module.js";
 
-// Register complete learning modules here. The shell derives navigation and counts.
-export const modules = [ceaControl];
+// Status controls availability; hidden drafts appear only in preview mode.
+export const modules = [ceaControl, climateDesign];
 
 export const legacyProgressModuleId = ceaControl.id;

@@ -20,6 +20,15 @@ import {
   renderLabPage,
   renderGlossary,
 } from "./reader.js";
+import { renderAcademy } from "./catalog-view.js";
+import {
+  isPublished,
+  getPublishedModules,
+  getAccessibleModules,
+  isPreviewLink,
+  withPreview,
+  withoutPreview,
+} from "./publication.js";
 
 const $ = (selector, root = document) => root.querySelector(selector);
 const main = $("#main");
@@ -28,12 +37,81 @@ const progress = createProgressStore(modules, {
   legacyModuleId: legacyProgressModuleId,
 });
 const moduleById = new Map(modules.map((module) => [module.id, module]));
+const publishedIds = getPublishedModules(modules).map((module) => module.id);
+const previewStorageKey = "grownetics-academy-preview-v1";
 const styleLoads = new Map();
 const number = (value) => String(value).padStart(2, "0");
 const plural = (count, noun) => `${count} ${noun}${count === 1 ? "" : "s"}`;
 let current = { page: "academy" };
 let routeVersion = 0;
 let cleanupView;
+let previewEnabled = false;
+try {
+  previewEnabled = sessionStorage.getItem(previewStorageKey) === "1";
+} catch {
+  // Preview still works for this visit when tab storage is unavailable.
+}
+
+function canAccessModule(id) {
+  const module = moduleById.get(id);
+  return isPublished(module) || (previewEnabled && module?.status === "draft");
+}
+
+function setPreviewValue(enabled) {
+  previewEnabled = enabled;
+  try {
+    sessionStorage.setItem(previewStorageKey, enabled ? "1" : "0");
+  } catch {}
+  $("#show-drafts").checked = enabled;
+}
+
+function changePreview(enabled) {
+  const restoreFocus = $("#draft-banner").contains(document.activeElement);
+  setPreviewValue(enabled);
+  if (!enabled) {
+    const url = new URL(location.href);
+    url.hash = withoutPreview(location.hash);
+    history.replaceState(history.state, "", url);
+  }
+  search.refresh();
+  if (current.page === "academy" || current.module?.status === "draft") {
+    route();
+  } else {
+    // Changing discovery must not restart a published lab or clear an answer.
+    renderChrome();
+    if (restoreFocus) main.focus({ preventScroll: true });
+  }
+}
+
+function renderDraftBanner() {
+  const banner = $("#draft-banner");
+  const draft = current.module?.status === "draft";
+  $("#show-drafts").checked = previewEnabled;
+  document.documentElement.dataset.preview = String(previewEnabled);
+  banner.hidden = !previewEnabled;
+  if (!previewEnabled) {
+    banner.replaceChildren();
+    return;
+  }
+  banner.innerHTML = `<div class="draft-banner-copy"><span class="draft-badge">${draft ? "DRAFT" : "PREVIEW MODE"}</span><div><strong>${draft ? "Content may change. Not yet published." : "Work in progress is visible."}</strong><p>${draft ? "For learning and review—not approved engineering guidance. Draft progress is tracked separately." : "Draft modules are excluded from your published learning totals."}</p></div></div><div class="draft-banner-actions">${draft ? '<button type="button" class="text-link" data-share-preview>Copy preview link ↗</button>' : ""}<button type="button" class="text-link" data-disable-preview>Exit preview</button></div><span id="preview-share-status" class="preview-share-status" role="status"></span><input id="preview-share-url" class="preview-share-url" aria-label="Shareable draft preview URL" readonly hidden>`;
+}
+
+async function copyPreviewLink() {
+  const url = new URL(location.href);
+  url.hash = withPreview(location.hash);
+  const status = $("#preview-share-status");
+  const field = $("#preview-share-url");
+  try {
+    await navigator.clipboard.writeText(url.href);
+    status.textContent = "Preview link copied.";
+  } catch {
+    field.hidden = false;
+    field.value = url.href;
+    field.focus();
+    field.select();
+    status.textContent = "Copy this link to share the draft.";
+  }
+}
 
 function setMenu(open) {
   open = open && mobileNavigation.matches;
@@ -61,7 +139,12 @@ function parseRoute() {
     const parts = path.split("/").map(decodeURIComponent);
     const [root, moduleId, page, itemId] = parts;
     const module = moduleById.get(moduleId);
-    if (root !== "modules" || !module) return { page: "not-found" };
+    if (
+      root !== "modules" ||
+      !module ||
+      (!isPublished(module) && module.status !== "draft")
+    )
+      return { page: "not-found" };
     if (parts.length === 2) return { page: "overview", module };
     if (page === "lessons" && parts.length === 4) {
       const lesson = module.lessons.find((item) => item.id === itemId);
@@ -95,13 +178,13 @@ function navLink(url, label, symbol, active, extra = "") {
 }
 
 function renderProgress() {
-  const module = current.module;
+  const module = current.page === "draft-gate" ? null : current.module;
   const snapshot = progress.snapshot(module?.id);
-  const totals = progress.totals();
+  const totals = progress.totals(publishedIds);
   const count = module ? snapshot.completed.length : totals.completed;
   const total = module ? module.lessons.length : totals.total;
   $("#course-progress").innerHTML =
-    `<div class="progress-heading"><span>${module ? "Module progress" : "Your learning journey"}</span><span>${count}<span class="progress-total"> / ${total}</span></span></div><div class="progress-track" role="progressbar" aria-label="Completed lessons" aria-valuemin="0" aria-valuemax="${total}" aria-valuenow="${count}"><span style="width:${total ? (count / total) * 100 : 0}%"></span></div><p>${count === total && total ? "A whole new way to see your facility." : count ? "Good things grow one lesson at a time." : "A little curiosity goes a long way."}</p><span class="progress-storage">${snapshot.storageAvailable ? "Progress saved on this device" : "Progress available for this visit only"}</span>`;
+    `<div class="progress-heading"><span>${module ? (module.status === "draft" ? "Draft progress" : "Module progress") : "Published learning"}</span><span>${count}<span class="progress-total"> / ${total}</span></span></div><div class="progress-track" role="progressbar" aria-label="${module?.status === "draft" ? "Completed draft lessons" : "Completed published lessons"}" aria-valuemin="0" aria-valuemax="${total}" aria-valuenow="${count}"><span style="width:${total ? (count / total) * 100 : 0}%"></span></div><p>${module?.status === "draft" ? "Not included in published learning totals." : count === total && total ? "A whole new way to see your facility." : count ? "Good things grow one lesson at a time." : "A little curiosity goes a long way."}</p><span class="progress-storage">${snapshot.storageAvailable ? "Progress saved on this device" : "Progress available for this visit only"}</span>`;
   $("#sidebar-content")
     .querySelectorAll("[data-lesson]")
     .forEach((link) => {
@@ -115,13 +198,14 @@ function renderProgress() {
 
 function renderChrome() {
   const { module, page, lesson, lab, reference } = current;
+  const accessible = getAccessibleModules(modules, previewEnabled);
   const allModules = `<nav class="primary-nav" aria-label="Academy">${navLink("#/", "All modules", "overview", page === "academy")}</nav>`;
-  if (module) {
+  if (module && canAccessModule(module.id)) {
     $("#sidebar-content").innerHTML =
-      `${allModules}<div class="nav-module-heading"><span class="eyebrow">MODULE ${escapeHtml(module.number)}</span><a href="${moduleUrl(module.id)}">${escapeHtml(module.title)}</a></div><nav class="primary-nav" aria-label="Module">${navLink(moduleUrl(module.id), "Module overview", "book", page === "overview")}${module.labs?.length && module.loadLab ? navLink(labUrl(module.id), "Interactive labs", "flask", page === "labs", `<span class="nav-count">${module.labs.length}</span>`) : ""}</nav><div class="nav-label">THE LEARNING PATH<span>${number(module.lessons.length)}</span></div><nav class="chapter-nav" aria-label="Module lessons">${module.lessons.map((item, index) => `<a href="${lessonUrl(module.id, item.id)}" data-lesson="${escapeHtml(item.id)}" ${lesson?.id === item.id ? 'class="active" aria-current="page"' : ""}><span class="chapter-number">${number(index + 1)}</span><span>${escapeHtml(item.shortTitle || item.title)}</span><span class="chapter-state"></span></a>`).join("")}</nav>${module.references?.length || module.glossary?.length || module.sources?.length ? `<div class="sidebar-divider"></div><nav class="primary-nav secondary-nav" aria-label="Module reference">${(module.references || []).map((item) => navLink(referenceUrl(module.id, item.id), item.title, item.icon || "file", reference?.id === item.id)).join("")}${module.glossary?.length ? navLink(glossaryUrl(module.id), "Field glossary", "book", page === "glossary") : ""}${(module.sources || []).map((source) => `<a href="${escapeHtml(source.url)}" target="_blank" rel="noopener">${icon("file")}<span>Source material</span><span class="external-arrow">↗</span></a>`).join("")}</nav>` : ""}`;
+      `${allModules}<div class="nav-module-heading"><span class="eyebrow">MODULE ${escapeHtml(module.number)}${module.status === "draft" ? ' <span class="draft-badge">DRAFT</span>' : ""}</span><a href="${moduleUrl(module.id)}">${escapeHtml(module.title)}</a></div><nav class="primary-nav" aria-label="Module">${navLink(moduleUrl(module.id), "Module overview", "book", page === "overview")}${module.labs?.length && module.loadLab ? navLink(labUrl(module.id), "Interactive labs", "flask", page === "labs", `<span class="nav-count">${module.labs.length}</span>`) : ""}</nav><div class="nav-label">THE LEARNING PATH<span>${number(module.lessons.length)}</span></div><nav class="chapter-nav" aria-label="Module lessons">${module.lessons.map((item, index) => `<a href="${lessonUrl(module.id, item.id)}" data-lesson="${escapeHtml(item.id)}" ${lesson?.id === item.id ? 'class="active" aria-current="page"' : ""}><span class="chapter-number">${number(index + 1)}</span><span>${escapeHtml(item.shortTitle || item.title)}</span><span class="chapter-state"></span></a>`).join("")}</nav>${module.references?.length || module.glossary?.length || module.sources?.length ? `<div class="sidebar-divider"></div><nav class="primary-nav secondary-nav" aria-label="Module reference">${(module.references || []).map((item) => navLink(referenceUrl(module.id, item.id), item.title, item.icon || "file", reference?.id === item.id)).join("")}${module.glossary?.length ? navLink(glossaryUrl(module.id), "Field glossary", "book", page === "glossary") : ""}${(module.sources || []).map((source) => `<a href="${escapeHtml(source.url)}" target="_blank" rel="noopener">${icon("file")}<span>${escapeHtml(source.label)}</span><span class="external-arrow">↗</span></a>`).join("")}</nav>` : ""}`;
   } else {
     $("#sidebar-content").innerHTML =
-      `${allModules}<div class="nav-label">EXPLORE THE ACADEMY<span>${number(modules.length)}</span></div><nav class="academy-nav" aria-label="Learning modules">${modules.map((item) => `<a href="${moduleUrl(item.id)}"><span class="eyebrow">MODULE ${escapeHtml(item.number)}</span><strong>${escapeHtml(item.title)}</strong><span>${plural(item.lessons.length, "lesson")}${item.labs?.length ? ` · ${plural(item.labs.length, "lab")}` : ""}</span>${icon("arrow")}</a>`).join("")}</nav><p class="sidebar-intro">A little theory.<br>A little experimentation.<br>A new way of seeing.</p>`;
+      `${allModules}<div class="nav-label">EXPLORE THE ACADEMY<span>${number(accessible.length)}</span></div><nav class="academy-nav" aria-label="Learning modules">${accessible.map((item) => `<a href="${moduleUrl(item.id)}"><span class="eyebrow">MODULE ${escapeHtml(item.number)}${item.status === "draft" ? " · DRAFT" : ""}</span><strong>${escapeHtml(item.title)}</strong><span>${plural(item.lessons.length, "lesson")}${item.labs?.length ? ` · ${plural(item.labs.length, "lab")}` : ""}</span>${icon("arrow")}</a>`).join("")}</nav><p class="sidebar-intro">A little theory.<br>A little experimentation.<br>A new way of seeing.</p>`;
   }
   const label =
     lesson?.shortTitle ||
@@ -131,93 +215,28 @@ function renderChrome() {
       ? "Field glossary"
       : page === "not-found"
         ? "Page not found"
-        : module?.shortTitle || "All modules");
+        : page === "draft-gate"
+          ? "Draft preview"
+          : module?.shortTitle || "All modules");
   $("#breadcrumb-current").innerHTML =
-    module && page !== "overview"
+    module && canAccessModule(module.id) && page !== "overview"
       ? `<a href="${moduleUrl(module.id)}">${escapeHtml(module.shortTitle || module.title)}</a><span class="breadcrumb-slash"> / </span>${escapeHtml(label)}`
       : escapeHtml(label);
-  $("#topbar-link").href = module ? moduleUrl(module.id) : "#/";
-  $("#topbar-link").innerHTML = module
-    ? "Module overview <span>↗</span>"
-    : "Knowledge, cultivated. <span>↗</span>";
+  $("#topbar-link").href =
+    module && canAccessModule(module.id) ? moduleUrl(module.id) : "#/";
+  $("#topbar-link").innerHTML =
+    module && canAccessModule(module.id)
+      ? "Module overview <span>↗</span>"
+      : "Knowledge, cultivated. <span>↗</span>";
   const source = module?.sources?.[0];
   $("#footer-source").href =
     source?.url || "https://github.com/vhark/grownetics-academy";
   $("#footer-source").textContent = source
-    ? "Built from the field guide ↗"
+    ? "Source material ↗"
     : "Explore the source ↗";
-  document.title = `${lesson?.title || lab?.label || reference?.title || (page === "glossary" ? "Field glossary" : module?.title) || (page === "academy" ? "Grow your understanding" : "Page not found")} · Grownetics Academy`;
+  document.title = `${module?.status === "draft" ? "Draft · " : ""}${lesson?.title || lab?.label || reference?.title || (page === "glossary" ? "Field glossary" : module?.title) || (page === "academy" ? "Grow your understanding" : "Page not found")} · Grownetics Academy`;
   renderProgress();
-}
-
-function learningArt() {
-  return `<svg class="academy-art" viewBox="0 0 420 350" role="img" aria-labelledby="learning-art-title"><title id="learning-art-title">Knowledge grows through observation, understanding, and practice</title><defs><pattern id="academy-dots" width="18" height="18" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r=".8" fill="currentColor" opacity=".2"/></pattern></defs><rect x="8" y="8" width="404" height="334" rx="12" fill="url(#academy-dots)"/><circle cx="211" cy="175" r="127" fill="none" stroke="currentColor" stroke-opacity=".15"/><circle cx="211" cy="175" r="91" fill="none" stroke="currentColor" stroke-opacity=".15" stroke-dasharray="3 8"/><g fill="var(--surface)" stroke="currentColor" stroke-width="1.6"><path d="M143 227V163q33-12 68 8v69q-37-22-68-13Z"/><path d="M211 171q35-20 68-8v64q-33-12-68 13Z"/></g><g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M155 177q22-5 42 6m-42 7q22-5 42 6m-42 7q22-5 42 6m26-26q22-10 42-6m-42 19q22-10 42-6m-42 19q22-10 42-6" opacity=".4"/><path d="M211 169v-53"/><path d="M211 143c-33 0-33-33-33-33s37 0 33 33Z" fill="var(--sage)"/><path d="M211 123c-4-37 35-35 35-35s2 35-35 35Z" fill="var(--sage)"/></g><g fill="var(--surface)" stroke="currentColor" stroke-opacity=".3"><rect x="24" y="102" width="102" height="37" rx="5"/><rect x="272" y="132" width="126" height="37" rx="5"/><rect x="164" y="279" width="95" height="37" rx="5"/></g><g fill="currentColor" font-family="var(--mono)" font-size="10" text-anchor="middle" letter-spacing="1"><text x="75" y="125">OBSERVE</text><text x="335" y="155">UNDERSTAND</text><text x="212" y="302">APPLY</text></g><g fill="var(--accent)"><circle cx="123" cy="249" r="4"/><circle cx="297" cy="85" r="4"/><circle cx="210" cy="48" r="3"/></g><path d="m326 233 0 12m-6-6h12M104 56v10m-5-5h10" stroke="currentColor" stroke-opacity=".5"/></svg>`;
-}
-
-function renderAcademy() {
-  const totals = progress.totals();
-  const labs = modules.reduce(
-    (count, module) => count + (module.labs?.length || 0),
-    0,
-  );
-  const resume = progress.resume();
-  main.innerHTML = `<div class="academy-page page-enter"><div class="page-kicker"><span><span class="status-dot"></span> GROWNETICS ACADEMY</span><span class="edition">KNOWLEDGE, CULTIVATED.</span></div><section class="academy-hero" aria-labelledby="academy-title"><div class="academy-hero-copy"><span class="eyebrow">FOR THE GROWERS. AND THE CURIOUS.</span><h1 id="academy-title">Grow your<br><em>understanding.</em></h1><p class="hero-description">Practical learning for the people behind growing environments. Connect the science to the systems—and turn a little curiosity into better decisions.</p><div class="hero-actions">${resume ? `<a class="button button-primary" href="${lessonUrl(resume.moduleId, resume.lessonId)}">Continue learning ${icon("arrow")}</a><a class="text-link" href="#module-catalog" data-catalog-scroll>Explore the modules <span>↓</span></a>` : `<a class="button button-primary" href="#module-catalog" data-catalog-scroll>Explore the modules ${icon("arrow")}</a><span class="academy-self-paced">No rush. Just curiosity.</span>`}</div><div class="hero-meta"><span>${icon("book")} ${plural(modules.length, "module")} · ${plural(totals.total, "lesson")}</span>${labs ? `<span>${icon("flask")} ${plural(labs, "hands-on lab")}</span>` : ""}</div></div><div class="academy-hero-visual"><div class="figure-heading"><span>GOOD QUESTIONS</span><span class="figure-plus">+</span></div>${learningArt()}<p>Great growing starts with a different way of seeing.</p></div></section><section class="module-catalog" id="module-catalog" aria-labelledby="catalog-title"><div class="section-heading"><div><span class="eyebrow">FOLLOW YOUR CURIOSITY</span><h2 id="catalog-title">A place to start.<br>A perspective to build on.</h2></div><p>Focused modules. Connected ideas.<br>Go deep, at your own pace.</p></div><div class="module-cards">${modules
-    .map((module) => {
-      const saved = progress.snapshot(module.id);
-      const minutes = module.lessons.reduce(
-        (sum, lesson) => sum + (lesson.minutes || 0),
-        0,
-      );
-      return `<article class="module-card"><div class="module-card-main"><div class="module-card-kicker"><span class="eyebrow">MODULE ${escapeHtml(module.number)}</span><span class="module-level">${escapeHtml(module.level || "Self-paced")}</span></div><h3><a href="${moduleUrl(module.id)}">${escapeHtml(module.title)}</a></h3><p class="module-summary">${escapeHtml(module.summary)}</p><div class="module-facts"><span>${icon("book")} ${plural(module.lessons.length, "lesson")}</span>${module.labs?.length ? `<span>${icon("flask")} ${plural(module.labs.length, "interactive lab")}</span>` : ""}<span>${icon("clock")} ${minutes} min reading</span></div><div class="module-card-actions"><a class="button button-primary" href="${moduleUrl(module.id)}">Explore this module ${icon("arrow")}</a>${saved.lastLesson ? `<a class="text-link" href="${lessonUrl(module.id, saved.lastLesson)}">Resume lesson <span>↗</span></a>` : `<span class="module-prerequisites">${module.prerequisites?.length ? `Builds on ${module.prerequisites.map((id) => escapeHtml(moduleById.get(id)?.title || id)).join(", ")}` : "No prior knowledge needed"}</span>`}</div>${saved.lastLesson || saved.completed.length ? `<div class="module-saved-progress">${saved.completed.length} of ${module.lessons.length} lessons completed · ${saved.storageAvailable ? "saved on this device" : "this visit only"}</div>` : ""}</div><div class="module-card-preview"><span class="eyebrow">YOUR PATH THROUGH THE IDEAS</span><ol>${module.lessons
-        .slice(0, 4)
-        .map(
-          (lesson, index) =>
-            `<li><span>${number(index + 1)}</span><a href="${lessonUrl(module.id, lesson.id)}">${escapeHtml(lesson.shortTitle || lesson.title)}</a></li>`,
-        )
-        .join(
-          "",
-        )}</ol>${module.lessons.length > 4 ? `<a href="${moduleUrl(module.id)}" class="module-more">Plus ${module.lessons.length - 4} more lessons ${icon("arrow")}</a>` : ""}${module.audience?.length ? `<p class="module-audience">Made for ${module.audience.map((audience) => escapeHtml(audience.toLocaleLowerCase())).join(", ")}.</p>` : ""}</div></article>`;
-    })
-    .join(
-      "",
-    )}</div></section><section class="academy-approach" aria-label="How learning works">${[
-    [
-      "book",
-      "Make the ideas click.",
-      "Clear explanations, real growing contexts, and just enough theory to see what matters.",
-    ],
-    [
-      "flask",
-      "Learn by changing something.",
-      "Explore safe, illustrative labs. Challenge an assumption and see the trade-offs.",
-    ],
-    [
-      "leaf",
-      "Take a new perspective back.",
-      "Build understanding you can use to ask better questions about your own environment.",
-    ],
-  ]
-    .map(
-      ([symbol, title, text], index) =>
-        `<div><span class="academy-approach-icon">${icon(symbol)}<span class="mono">0${index + 1}</span></span><h3>${title}</h3><p>${text}</p></div>`,
-    )
-    .join(
-      "",
-    )}</section><section class="closing-note"><span class="eyebrow">ROOTED IN KNOWLEDGE. GROWN IN PRACTICE.</span><h2>Better understanding.<br><em>Better growing.</em></h2><p>You don’t have to know everything.<br>Just keep asking good questions.</p></section></div>`;
-  main.querySelectorAll("[data-catalog-scroll]").forEach((link) =>
-    link.addEventListener("click", (event) => {
-      event.preventDefault();
-      const catalog = $("#module-catalog");
-      catalog.scrollIntoView({
-        block: "start",
-        behavior: matchMedia("(prefers-reduced-motion: reduce)").matches
-          ? "instant"
-          : "smooth",
-      });
-      catalog.setAttribute("tabindex", "-1");
-      catalog.focus({ preventScroll: true });
-    }),
-  );
+  renderDraftBanner();
 }
 
 function loadStyles(urls = []) {
@@ -234,7 +253,7 @@ function loadStyles(urls = []) {
             link.onerror = () => {
               link.remove();
               styleLoads.delete(url);
-              reject(new Error("Lab styles could not be loaded."));
+              reject(new Error("Module styles could not be loaded."));
             };
             document.head.append(link);
           }),
@@ -249,12 +268,36 @@ function renderNotFound() {
   main.innerHTML = `<div class="overview-page page-enter"><header class="page-header"><span class="eyebrow">A SMALL DETOUR</span><h1>This path hasn’t<br><em>been planted.</em></h1><p>That module, lesson, or lab could not be found. The academy catalog will get you back on track.</p></header><a class="button button-primary" href="#/">Back to all modules ${icon("arrow")}</a></div>`;
 }
 
+function renderDraftGate(module) {
+  main.innerHTML = `<div class="overview-page draft-gate page-enter"><div class="page-kicker"><a href="#/">← ALL MODULES</a><span>MODULE ${escapeHtml(module.number)} · IN DEVELOPMENT</span></div><header class="page-header"><span class="eyebrow">A WORK IN PROGRESS</span><h1>${escapeHtml(module.title)}</h1><p>${escapeHtml(module.summary)}</p></header><div class="draft-gate-note"><h2>Step inside the working draft.</h2><p>This module is being developed in public. Its lessons and examples are available for review, but content may change and has not joined the published curriculum.</p><p>Previewing is an explicit opt-in. It is not a private area, and draft progress stays separate from published learning totals.</p><button type="button" class="button button-primary" data-enable-preview="${escapeHtml(module.id)}">Enable draft preview ${icon("arrow")}</button></div></div>`;
+}
+
 async function route() {
   const version = ++routeVersion;
   cleanupView?.();
   cleanupView = undefined;
   setMenu(false);
+  if (isPreviewLink(location.hash)) {
+    if (!previewEnabled) {
+      setPreviewValue(true);
+      search.refresh();
+    }
+    // Consume the opt-in once; Back must not undo a later explicit exit.
+    const url = new URL(location.href);
+    url.hash = withoutPreview(location.hash);
+    history.replaceState(history.state, "", url);
+  }
   current = parseRoute();
+  if (
+    current.module &&
+    current.page !== "not-found" &&
+    !canAccessModule(current.module.id)
+  ) {
+    current =
+      current.module.status === "draft"
+        ? { page: "draft-gate", module: current.module }
+        : { page: "not-found" };
+  }
   if (current.lesson) progress.visit(current.module.id, current.lesson.id);
   renderChrome();
   const { module, page } = current;
@@ -262,7 +305,13 @@ async function route() {
   main.innerHTML =
     '<div class="route-loading" role="status">Opening your next good question…</div>';
   try {
-    if (page === "academy") renderAcademy();
+    if (module && page !== "draft-gate" && page !== "not-found") {
+      await loadStyles(module.styles);
+      if (version !== routeVersion) return;
+    }
+    if (page === "academy")
+      renderAcademy(main, { modules, progress, preview: previewEnabled });
+    else if (page === "draft-gate") renderDraftGate(module);
     else if (page === "overview") {
       const render = module.loadOverview
         ? await module.loadOverview()
@@ -307,12 +356,31 @@ async function route() {
   }
 }
 
-// Settings live outside the changing view: toggles never navigate or reset labs.
+// Display choices never navigate; preview only re-routes a draft or the catalog.
 initDisplayPreferences();
 document.querySelectorAll("[data-icon]").forEach((element) => {
   element.innerHTML = icon(element.dataset.icon);
 });
-initSearch({ modules, beforeOpen: () => setMenu(false) });
+const search = initSearch({
+  modules,
+  beforeOpen: () => setMenu(false),
+  canSearchModule: canAccessModule,
+});
+$("#show-drafts").addEventListener("change", (event) =>
+  changePreview(event.currentTarget.checked),
+);
+document.addEventListener("click", (event) => {
+  const enable = event.target.closest("[data-enable-preview]");
+  if (enable) {
+    setPreviewValue(true);
+    search.refresh();
+    const id = enable.dataset.enablePreview;
+    if (id && current.module?.id !== id) location.hash = moduleUrl(id);
+    else route();
+  } else if (event.target.closest("[data-disable-preview]"))
+    changePreview(false);
+  else if (event.target.closest("[data-share-preview]")) copyPreviewLink();
+});
 $(".skip-link").addEventListener("click", (event) => {
   event.preventDefault();
   main.focus();
@@ -332,7 +400,9 @@ document.addEventListener("keydown", (event) => {
     $("#menu-toggle").focus();
   }
   if (event.key === "Tab" && document.body.classList.contains("menu-open")) {
-    const focusable = [...$("#sidebar").querySelectorAll("a[href], button")];
+    const focusable = [
+      ...$("#sidebar").querySelectorAll("a[href], button, input"),
+    ];
     const first = focusable[0],
       last = focusable.at(-1);
     if (event.shiftKey && document.activeElement === first) {

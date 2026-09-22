@@ -7,8 +7,13 @@ import {
   referenceUrl,
   glossaryUrl,
 } from "./ui.js";
+import { withPreview } from "./publication.js";
 
-export function initSearch({ modules, beforeOpen }) {
+export function initSearch({
+  modules,
+  beforeOpen,
+  canSearchModule = () => true,
+}) {
   const trigger = document.querySelector("#search-trigger");
   const dialog = document.querySelector("#search-dialog");
   const input = document.querySelector("#search-input");
@@ -25,6 +30,8 @@ export function initSearch({ modules, beforeOpen }) {
   const add = (module, entry, text) => {
     index.push({
       ...entry,
+      moduleId: module.id,
+      moduleStatus: module.status,
       moduleTitle: module.title,
       titleLower: entry.title.toLocaleLowerCase(),
       text: `${module.title} ${module.shortTitle || ""} ${entry.kind} ${text}`.toLocaleLowerCase(),
@@ -110,8 +117,9 @@ export function initSearch({ modules, beforeOpen }) {
   function show(query = "") {
     const normalized = query.toLocaleLowerCase().trim();
     const tokens = normalized.split(/\s+/).filter(Boolean);
+    const accessible = index.filter((item) => canSearchModule(item.moduleId));
     const matches = tokens.length
-      ? index
+      ? accessible
           .filter((item) => tokens.every((token) => item.text.includes(token)))
           .sort(
             (a, b) =>
@@ -119,8 +127,8 @@ export function initSearch({ modules, beforeOpen }) {
               Number(a.titleLower.includes(normalized)),
           )
       : [
-          ...index.filter((item) => item.kind === "Module"),
-          ...index.filter((item) => item.lesson).slice(0, 5),
+          ...accessible.filter((item) => item.kind === "Module"),
+          ...accessible.filter((item) => item.lesson).slice(0, 5),
         ];
     const shown = matches.slice(0, 12);
     results.innerHTML = `<p class="search-result-label">${tokens.length ? `${matches.length} MATCHING RESULTS` : "A FEW PLACES TO START"}</p>${
@@ -128,7 +136,7 @@ export function initSearch({ modules, beforeOpen }) {
         ? shown
             .map(
               (item) =>
-                `<a class="search-result" href="${escapeHtml(item.url)}">${icon(item.icon)}<span><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(`${item.kind} · ${item.moduleTitle}`)}</small>${item.description ? `<small>${escapeHtml(item.description)}</small>` : ""}</span><span aria-hidden="true">↗</span></a>`,
+                `<a class="search-result" href="${escapeHtml(item.moduleStatus === "draft" ? withPreview(item.url) : item.url)}">${icon(item.icon)}<span><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(`${item.moduleStatus === "draft" ? "Draft · " : ""}${item.kind} · ${item.moduleTitle}`)}</small>${item.description ? `<small>${escapeHtml(item.description)}</small>` : ""}</span><span aria-hidden="true">↗</span></a>`,
             )
             .join("")
         : '<div class="search-empty"><p>No results yet.</p><span>Try a module name, lesson topic, or glossary term.</span></div>'
@@ -218,6 +226,9 @@ export function initSearch({ modules, beforeOpen }) {
 
   return {
     open,
+    refresh() {
+      if (!listeners.signal.aborted && dialog.open) show(input.value);
+    },
     destroy() {
       listeners.abort();
       if (dialog.open) close();

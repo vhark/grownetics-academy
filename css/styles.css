@@ -505,6 +505,7 @@ kbd {
 .chapter-page,
 .labs-page,
 .reference-page,
+.atlas-page,
 .glossary-page {
   max-width: 1390px;
   margin: 0 auto;
@@ -1424,7 +1425,7 @@ kbd {
   max-width: 220px;
 }
 .lesson-completion button[aria-pressed="true"] {
-  background: #668150;
+  background: var(--green);
 }
 .source-note {
   font-size: 10px;
@@ -1886,6 +1887,7 @@ kbd {
   .chapter-page,
   .labs-page,
   .reference-page,
+  .atlas-page,
   .glossary-page {
     padding-left: 34px;
     padding-right: 34px;
@@ -2150,6 +2152,7 @@ kbd {
   .chapter-page,
   .labs-page,
   .reference-page,
+  .atlas-page,
   .glossary-page {
     padding: 28px 30px 0;
   }
@@ -2246,6 +2249,7 @@ kbd {
   .chapter-page,
   .labs-page,
   .reference-page,
+  .atlas-page,
   .glossary-page {
     padding: 25px 22px 0;
   }
@@ -2752,6 +2756,7 @@ kbd {
   .chapter-page,
   .labs-page,
   .reference-page,
+  .atlas-page,
   .glossary-page {
     padding-left: 17px;
     padding-right: 17px;
@@ -3316,5 +3321,192 @@ kbd {
   .academy-approach p {
     max-width: 400px;
     font-size: 12px;
+  }
+}
+
+/* Publication state is separate from appearance and saved learning progress. */
+html[data-preview="true"] {
+  scroll-padding-top: 150px;
+}
+.preview-control {
+  border-top: 1px solid var(--line);
+  margin-top: 12px;
+  padding-top: 8px;
+}
+.preview-control label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 34px;
+  font-size: 10px;
+  cursor: pointer;
+}
+.preview-control input {
+  width: 17px;
+  height: 17px;
+  margin: 0;
+  accent-color: var(--green);
+  flex-shrink: 0;
+}
+.preview-control p {
+  font-size: 8px;
+  line-height: 1.5;
+  color: var(--muted);
+  margin-top: 3px;
+}
+.draft-badge {
+  display: inline-block;
+  font: 8px/1.4 var(--mono);
+  letter-spacing: 1px;
+  padding: 4px 7px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  color: var(--ink);
+  background: var(--surface);
+  white-space: nowrap;
+}
+.module-card.is-locked {
+  border-style: dashed;
+  background: var(--sidebar);
+}
+.module-card.is-locked h3 {
+  color: var(--muted);
+}
+.module-card-draft .module-card-preview {
+  background: var(--paper);
+}
+.module-card-preview li > .draft-lesson-title {
+  font: inherit;
+  color: var(--muted);
+}
+.draft-card-note {
+  font-size: 11px;
+  line-height: 1.8;
+  color: var(--muted);
+  margin-top: 17px;
+}
+.academy-nav {
+  display: grid;
+  gap: 12px;
+}
+.draft-banner {
+  position: sticky;
+  top: 0;
+  z-index: 25;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  padding: 14px 54px;
+  border-bottom: 1px solid var(--line);
+  background: var(--sage);
+}
+.draft-banner-copy {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex: 1 1 340px;
+}
+.draft-banner-copy strong {
+  font-size: 12px;
+  font-weight: 550;
+}
+.draft-banner-copy p {
+  font-size: 10px;
+  line-height: 1.7;
+  color: var(--muted);
+  margin-top: 3px;
+}
+.draft-banner-actions {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+.draft-banner-actions button {
+  padding: 7px 0;
+  border: 0;
+  background: transparent;
+  font-size: 11px;
+}
+.preview-share-status {
+  font-size: 10px;
+}
+.preview-share-status:empty {
+  display: none;
+}
+.preview-share-url {
+  min-width: 0;
+  width: 100%;
+  padding: 9px;
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  font-size: 11px;
+}
+.draft-gate {
+  padding-bottom: 65px;
+}
+.draft-gate-note {
+  padding: 28px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: var(--surface);
+  max-width: 740px;
+}
+.draft-gate-note h2 {
+  font-size: 28px;
+}
+.draft-gate-note p {
+  font-size: 14px;
+  line-height: 1.9;
+  color: var(--muted);
+  margin-top: 18px;
+}
+.draft-gate-note .button {
+  margin-top: 23px;
+}
+@media (max-width: 800px) {
+  .draft-banner {
+    padding: 12px 26px;
+  }
+}
+@media (max-width: 620px) {
+  .draft-banner {
+    padding: 12px 22px;
+    gap: 7px;
+  }
+  .draft-banner-copy {
+    align-items: flex-start;
+    gap: 9px;
+  }
+  .draft-banner-copy strong {
+    font-size: 11px;
+  }
+  .draft-banner-copy p {
+    font-size: 9px;
+  }
+  .draft-banner-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .draft-gate-note {
+    padding: 22px;
+  }
+  .draft-gate-note h2 {
+    font-size: 24px;
+  }
+  .draft-gate-note p {
+    font-size: 12px;
+  }
+}
+@media print {
+  .draft-banner {
+    position: static;
+  }
+  .draft-banner-actions {
+    display: none;
   }
 }

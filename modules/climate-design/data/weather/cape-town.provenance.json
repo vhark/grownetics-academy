@@ -1,0 +1,12 @@
+{
+  "sourceUrl": "https://archive-api.open-meteo.com/v1/archive?latitude=-33.9249&longitude=18.4241&start_date=2024-01-01&end_date=2025-01-01&hourly=temperature_2m%2Crelative_humidity_2m%2Csurface_pressure%2Cshortwave_radiation&timezone=UTC&models=era5&temperature_unit=celsius&timeformat=iso8601&cell_selection=land",
+  "retrievedAt": "2026-09-22T17:42:55.291Z",
+  "sha256": "ac25fb53d6cd26f5ec448c225bc18089ed1c0ad7304181f3cdbcc52104a19362",
+  "hashScope": "Exact uncompressed HTTP response body bytes, before JSON parsing",
+  "rawBytes": 343051,
+  "gzipBytes": 60363,
+  "rawFile": "weather/cape-town.json.gz",
+  "requestedStartDate": "2024-01-01",
+  "requestedEndDateInclusive": "2025-01-01",
+  "boundaryNote": "Extra day retained unchanged in raw response; only midnight on 2025-01-01 contributes the final 2024 preceding-hour solar interval."
+}

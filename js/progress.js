@@ -139,19 +139,26 @@ export function createProgressStore(
       save();
       return index === -1;
     },
-    resume() {
-      if (lastVisited) return { ...lastVisited };
+    resume(moduleIds) {
+      const selected = moduleIds === undefined ? null : new Set(moduleIds);
+      if (lastVisited && (!selected || selected.has(lastVisited.moduleId)))
+        return { ...lastVisited };
       for (const moduleId of validLessons.keys()) {
+        if (selected && !selected.has(moduleId)) continue;
         const lessonId = progress[moduleId].lastLesson;
         if (lessonId) return { moduleId, lessonId };
       }
       return null;
     },
-    totals() {
+    totals(moduleIds) {
+      const selected = moduleIds === undefined ? null : new Set(moduleIds);
       let completed = 0;
       let total = 0;
       let completedModules = 0;
+      let totalModules = 0;
       for (const [moduleId, lessonIds] of validLessons) {
+        if (selected && !selected.has(moduleId)) continue;
+        totalModules += 1;
         const count = progress[moduleId].completed.length;
         completed += count;
         total += lessonIds.size;
@@ -162,7 +169,7 @@ export function createProgressStore(
         completed,
         total,
         completedModules,
-        totalModules: validLessons.size,
+        totalModules,
       };
     },
   };

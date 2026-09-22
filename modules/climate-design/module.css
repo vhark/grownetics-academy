@@ -1,0 +1,362 @@
+.climate-overview,
+.climate-sources {
+  color: var(--ink);
+}
+
+.climate-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(270px, 0.85fr);
+  gap: clamp(30px, 5vw, 76px);
+  align-items: start;
+  padding: 38px 0 64px;
+}
+
+.climate-hero-copy h1 {
+  font-size: clamp(40px, 4.8vw, 68px);
+  margin: 20px 0 24px;
+}
+
+.climate-hero-copy h1 em {
+  color: var(--accent);
+  font-weight: 400;
+}
+
+.climate-hero-copy > p {
+  max-width: 630px;
+  color: var(--muted);
+  line-height: 1.8;
+  margin-bottom: 20px;
+}
+
+.climate-hero-copy > .climate-lead {
+  color: var(--ink);
+  font-size: 21px;
+  line-height: 1.6;
+}
+
+.climate-chain {
+  margin: 0;
+  padding: 28px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--ink);
+}
+
+.climate-chain h2 {
+  font-size: 30px;
+  margin: 12px 0 26px;
+}
+
+.climate-chain ol {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.climate-chain li {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: 4px 16px;
+  align-items: center;
+}
+
+.climate-chain-symbol {
+  display: grid;
+  place-items: center;
+  height: 44px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  color: var(--green);
+}
+
+.climate-chain-symbol .icon {
+  width: 24px;
+  height: 24px;
+}
+
+.climate-chain-number {
+  font-family: var(--mono);
+  color: var(--accent);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+}
+
+.climate-chain li h3 {
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+.climate-chain li p {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.climate-chain-arrow {
+  grid-column: 1;
+  text-align: center;
+  color: var(--muted);
+  font-size: 21px;
+  line-height: 1.5;
+}
+
+.climate-chain-caption {
+  border-top: 1px solid var(--line);
+  margin-top: 24px;
+  padding-top: 18px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.climate-editorial,
+.climate-outcomes,
+.climate-handoff {
+  border-top: 1px solid var(--line);
+  padding: 44px 0;
+}
+
+.climate-editorial h2,
+.climate-outcomes h2,
+.climate-handoff h2 {
+  margin: 14px 0 24px;
+}
+
+.climate-editorial-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+.climate-editorial a,
+.climate-handoff p a,
+.climate-sources p a,
+.climate-sources li a {
+  color: var(--green);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.climate-outcomes {
+  display: grid;
+  grid-template-columns: 0.8fr 1.2fr;
+  gap: 38px;
+}
+
+.climate-outcomes ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.climate-outcomes li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 0;
+}
+
+.climate-outcomes .icon {
+  flex: 0 0 18px;
+  margin-top: 3px;
+  color: var(--green);
+}
+
+.climate-small {
+  margin-top: 24px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.climate-resource-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin: 12px 0 48px;
+}
+
+.climate-resource-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 30px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+}
+
+.climate-resource-card > .icon {
+  width: 40px;
+  height: 40px;
+  margin: 26px 0;
+  color: var(--green);
+}
+
+.climate-resource-card h2 {
+  font-size: 29px;
+  margin-bottom: 18px;
+}
+
+.climate-resource-card p {
+  color: var(--muted);
+  line-height: 1.8;
+  margin-bottom: 24px;
+}
+
+.climate-resource-card > .text-link {
+  margin-top: auto;
+}
+
+.climate-resource-card:hover {
+  border-color: var(--green);
+}
+
+.climate-handoff p {
+  max-width: 780px;
+  margin: 0 0 18px;
+  line-height: 1.8;
+  color: var(--muted);
+}
+
+.climate-source-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 22px;
+  padding: 22px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  color: var(--green);
+  font-size: 13px;
+}
+
+.climate-source-nav a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.climate-source-section {
+  padding: 42px 0;
+  max-width: 900px;
+  border-bottom: 1px solid var(--line);
+  scroll-margin-top: 100px;
+}
+
+.climate-source-section h2 {
+  margin: 14px 0 24px;
+}
+
+.climate-source-section h3 {
+  margin: 0 0 14px;
+  font-size: 19px;
+}
+
+.climate-source-section p,
+.climate-source-section li,
+.climate-source-section dd {
+  color: var(--muted);
+  line-height: 1.85;
+}
+
+.climate-source-section p + p,
+.climate-source-section li + li {
+  margin-top: 12px;
+}
+
+.climate-source-section ul {
+  padding-left: 24px;
+  margin: 20px 0;
+}
+
+.climate-source-section strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.climate-source-section code {
+  font-family: var(--mono);
+  font-size: 0.85em;
+  overflow-wrap: anywhere;
+}
+
+.climate-evidence-list {
+  margin: 0;
+}
+
+.climate-evidence-list > div {
+  display: grid;
+  grid-template-columns: minmax(140px, 0.65fr) minmax(0, 1.6fr);
+  gap: 24px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.climate-evidence-list dt {
+  font-weight: 600;
+}
+
+.climate-evidence-list dd {
+  margin: 0;
+}
+
+.climate-citation {
+  margin: 26px 0;
+  padding: 26px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+}
+
+.climate-boundary {
+  border-left: 3px solid var(--accent);
+  padding-left: 24px;
+  margin: 34px 0;
+}
+
+@media (max-width: 1000px) {
+  .climate-hero {
+    grid-template-columns: minmax(0, 1.2fr) minmax(250px, 0.8fr);
+    gap: 26px;
+  }
+
+  .climate-chain {
+    padding: 22px;
+  }
+}
+
+@media (max-width: 760px) {
+  .climate-hero,
+  .climate-outcomes,
+  .climate-editorial-columns,
+  .climate-resource-grid,
+  .climate-evidence-list > div {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .climate-hero {
+    padding-top: 22px;
+    gap: 32px;
+  }
+
+  .climate-hero-copy h1 {
+    font-size: clamp(36px, 9vw, 54px);
+  }
+
+  .climate-outcomes,
+  .climate-editorial-columns,
+  .climate-evidence-list > div {
+    gap: 14px;
+  }
+
+  .climate-chain {
+    max-width: 520px;
+    width: 100%;
+  }
+
+  .climate-resource-card,
+  .climate-citation {
+    padding: 22px;
+  }
+
+  .climate-boundary {
+    padding-left: 18px;
+  }
+}

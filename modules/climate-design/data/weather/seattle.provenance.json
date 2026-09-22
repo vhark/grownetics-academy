@@ -1,0 +1,12 @@
+{
+  "sourceUrl": "https://archive-api.open-meteo.com/v1/archive?latitude=47.6062&longitude=-122.3321&start_date=2024-01-01&end_date=2025-01-01&hourly=temperature_2m%2Crelative_humidity_2m%2Csurface_pressure%2Cshortwave_radiation&timezone=UTC&models=era5&temperature_unit=celsius&timeformat=iso8601&cell_selection=land",
+  "retrievedAt": "2026-09-22T17:42:58.936Z",
+  "sha256": "ed4ed8532f21becfc14d3f6eab415471ee47dd56c84fa4d8e13534168058b456",
+  "hashScope": "Exact uncompressed HTTP response body bytes, before JSON parsing",
+  "rawBytes": 337917,
+  "gzipBytes": 59649,
+  "rawFile": "weather/seattle.json.gz",
+  "requestedStartDate": "2024-01-01",
+  "requestedEndDateInclusive": "2025-01-01",
+  "boundaryNote": "Extra day retained unchanged in raw response; only midnight on 2025-01-01 contributes the final 2024 preceding-hour solar interval."
+}

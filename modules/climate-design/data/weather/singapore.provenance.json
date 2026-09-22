@@ -1,0 +1,12 @@
+{
+  "sourceUrl": "https://archive-api.open-meteo.com/v1/archive?latitude=1.3521&longitude=103.8198&start_date=2024-01-01&end_date=2025-01-01&hourly=temperature_2m%2Crelative_humidity_2m%2Csurface_pressure%2Cshortwave_radiation&timezone=UTC&models=era5&temperature_unit=celsius&timeformat=iso8601&cell_selection=land",
+  "retrievedAt": "2026-09-22T17:42:51.590Z",
+  "sha256": "873c884a9b2e54da59d91489ca4325fe75dc5991bc8949c9c05216f572a1652a",
+  "hashScope": "Exact uncompressed HTTP response body bytes, before JSON parsing",
+  "rawBytes": 343097,
+  "gzipBytes": 55290,
+  "rawFile": "weather/singapore.json.gz",
+  "requestedStartDate": "2024-01-01",
+  "requestedEndDateInclusive": "2025-01-01",
+  "boundaryNote": "Extra day retained unchanged in raw response; only midnight on 2025-01-01 contributes the final 2024 preceding-hour solar interval."
+}

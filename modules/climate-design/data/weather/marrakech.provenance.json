@@ -1,0 +1,12 @@
+{
+  "sourceUrl": "https://archive-api.open-meteo.com/v1/archive?latitude=31.6295&longitude=-7.9811&start_date=2024-01-01&end_date=2025-01-01&hourly=temperature_2m%2Crelative_humidity_2m%2Csurface_pressure%2Cshortwave_radiation&timezone=UTC&models=era5&temperature_unit=celsius&timeformat=iso8601&cell_selection=land",
+  "retrievedAt": "2026-09-22T17:42:47.901Z",
+  "sha256": "3e92bc7d1801ff4866f78d12f3b0e4efb2b34063ea6ce1de3dd9f29658c8f773",
+  "hashScope": "Exact uncompressed HTTP response body bytes, before JSON parsing",
+  "rawBytes": 334006,
+  "gzipBytes": 61479,
+  "rawFile": "weather/marrakech.json.gz",
+  "requestedStartDate": "2024-01-01",
+  "requestedEndDateInclusive": "2025-01-01",
+  "boundaryNote": "Extra day retained unchanged in raw response; only midnight on 2025-01-01 contributes the final 2024 preceding-hour solar interval."
+}
