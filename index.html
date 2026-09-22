@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f7f8f2" />
+    <meta
+      name="description"
+      content="A practical, interactive guide to greenhouse and indoor-farm automation. Explore control strategies, facility graphs, and uncertainty with Grownetics Academy."
+    />
+    <title>The art & science of growing control · Grownetics Academy</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='10' fill='%23243e31'/%3E%3Cpath d='M20 30V19M20 23C8 24 9 11 9 11s13 0 11 12Zm0-5C18 6 31 8 31 8s1 12-11 10Z' fill='none' stroke='%23dce8ba' stroke-width='2'/%3E%3C/svg%3E"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;450;500;550;600;650;700&family=IBM+Plex+Mono:wght@400;500&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/styles.css?v=academy-1" />
+    <link rel="stylesheet" href="css/labs.css" />
+    <script type="module" src="js/main.js?v=academy-1"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <aside class="sidebar" id="sidebar" aria-label="Course navigation">
+      <a href="#/" class="brand" aria-label="Grownetics Academy home">
+        <svg
+          class="brand-icon"
+          viewBox="0 0 40 40"
+          fill="none"
+          aria-hidden="true"
+        >
+          <path
+            d="M20 34V18M20 24C6 24 7 8 7 8s15 0 13 16ZM20 18C18 4 34 6 34 6s0 14-14 12Z"
+            stroke="currentColor"
+            stroke-width="2.2"
+            stroke-linecap="round"
+          />
+        </svg>
+        <span>grownetics<span class="brand-sub">ACADEMY</span></span>
+      </a>
+      <button class="search-trigger" id="search-trigger">
+        <span class="search-label"
+          ><svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="10.5" cy="10.5" r="6.5" />
+            <path d="m16 16 4 4" /></svg
+          >Search the guide</span
+        ><kbd>⌘ K</kbd>
+      </button>
+      <nav class="primary-nav" aria-label="Explore">
+        <a href="#/" data-nav="home"
+          ><span data-icon="overview"></span>Overview<span
+            class="nav-dot"
+          ></span
+        ></a>
+        <a href="#/labs" data-nav="labs"
+          ><span data-icon="flask"></span>Interactive labs<span
+            class="nav-count"
+            >3</span
+          ></a
+        >
+      </nav>
+      <div class="nav-label">THE LEARNING PATH<span>08</span></div>
+      <nav
+        class="chapter-nav"
+        id="chapter-nav"
+        aria-label="Course chapters"
+      ></nav>
+      <div class="sidebar-divider"></div>
+      <nav class="primary-nav secondary-nav" aria-label="Reference">
+        <a href="#/compare" data-nav="compare"
+          ><span data-icon="compare"></span>Strategy reference</a
+        >
+        <a href="#/glossary" data-nav="glossary"
+          ><span data-icon="book"></span>Field glossary</a
+        >
+        <a
+          href="docs/cea-control-strategies-educational-site-outline.md"
+          target="_blank"
+          rel="noopener"
+          ><span data-icon="file"></span>Source material<span
+            class="external-arrow"
+            >↗</span
+          ></a
+        >
+      </nav>
+      <div class="course-progress" id="course-progress"></div>
+      <div class="sidebar-footer">
+        <span class="tiny-leaf">✳</span>Rooted in knowledge. Grown in practice.
+      </div>
+    </aside>
+    <button
+      class="menu-backdrop"
+      id="menu-backdrop"
+      aria-label="Close navigation"
+      hidden
+    ></button>
+    <div class="main-shell">
+      <header class="topbar">
+        <div class="breadcrumbs">
+          <button
+            id="menu-toggle"
+            class="icon-button mobile-menu"
+            aria-controls="sidebar"
+            aria-expanded="false"
+            aria-label="Open navigation"
+          >
+            <span data-icon="menu"></span></button
+          ><span class="topbar-label">THE GROWER’S FIELD GUIDE</span
+          ><span class="breadcrumb-slash">/</span
+          ><span id="breadcrumb-current">Overview</span>
+        </div>
+        <a class="topbar-link" href="#/chapter/coupled-system"
+          >Let’s grow smarter <span>↗</span></a
+        >
+      </header>
+      <main id="main" tabindex="-1"></main>
+      <footer class="site-footer">
+        <a href="#/" class="footer-wordmark"
+          >grownetics<span> / academy</span></a
+        >
+        <p>Better understanding. Better decisions. Better growing.</p>
+        <a
+          href="docs/cea-control-strategies-educational-site-outline.md"
+          target="_blank"
+          rel="noopener"
+          >Built from the field guide ↗</a
+        >
+      </footer>
+    </div>
+    <dialog
+      class="search-dialog"
+      id="search-dialog"
+      aria-labelledby="search-title"
+    >
+      <div class="search-dialog-head">
+        <span data-icon="search"></span
+        ><label class="sr-only" for="search-input" id="search-title"
+          >Search the guide</label
+        ><input
+          type="search"
+          id="search-input"
+          placeholder="Search concepts, chapters, and terms…"
+          autocomplete="off"
+        /><button
+          id="search-close"
+          class="key-button"
+          aria-label="Close search"
+        >
+          Esc
+        </button>
+      </div>
+      <div class="search-results" id="search-results"></div>
+      <div class="search-dialog-footer">
+        Your next good question starts here.<span
+          >Enter to open the first result</span
+        >
+      </div>
+    </dialog>
+    <noscript
+      ><div class="noscript-note">
+        This interactive guide needs JavaScript. You can still
+        <a href="docs/cea-control-strategies-educational-site-outline.md"
+          >read the complete source curriculum</a
+        >.
+      </div></noscript
+    >
+  </body>
+</html>
