@@ -131,7 +131,7 @@
   line-height: 1.4;
   font-weight: 600;
 }
-.lab-choices button span {
+.lab-choices button > span {
   display: block;
   margin-top: 4px;
   color: var(--lab-muted);

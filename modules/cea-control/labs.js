@@ -1,3 +1,9 @@
+import {
+  applyTemperatureDisplay,
+  formatTemperature,
+  temperatureMarkup,
+} from "../../js/preferences.js";
+
 let labInstance = 0;
 
 const saturationPressure = (temperature) =>
@@ -30,7 +36,7 @@ function coupling(container, signal) {
   );
   let outside = "cool";
   root.querySelector(".lab-body").innerHTML =
-    `<div class="lab-workspace"><div class="lab-controls"><span class="lab-eyebrow">YOUR CONTROL</span><label class="lab-slider-label">Roof vent opening <output data-opening>40%</output><input type="range" min="0" max="100" step="1" value="40" data-vent aria-label="Roof vent opening, percent"></label><div class="lab-range-ends"><span>Closed</span><span>Fully open</span></div><fieldset class="lab-choices"><legend>Outside air</legend><button type="button" data-weather="cool" aria-pressed="true"><strong>Cool & dry</strong><span>16°C · 55% RH</span></button><button type="button" data-weather="warm" aria-pressed="false"><strong>Warm & humid</strong><span>32°C · 78% RH</span></button></fieldset><p class="lab-control-note">Reference room: 28°C, 72% RH, 950 ppm CO₂. Outside CO₂: 420 ppm.</p><button type="button" class="lab-reset" data-reset>Reset experiment <span aria-hidden="true">↺</span></button></div><div class="lab-results"><div class="lab-plot lab-coupling-plot" data-diagram></div><div class="lab-metrics" data-metrics></div><p class="lab-insight" data-summary aria-live="polite" aria-atomic="true"></p></div></div><details class="lab-method"><summary>Inside the model <span>Assumptions & equations</span></summary><div><p>This is an illustrative, steady mixing proxy, not a transient facility simulation. Vent opening maps to an outside-air fraction <code>f = 0.75 × opening / 100</code>; that mapping is arbitrary, not a ventilation-rate prediction.</p><p>At a constant 101.325 kPa, saturation vapor pressure is <code>eₛ(T) = 0.61078 exp(17.2694T / (T + 237.3))</code> kPa. We convert RH to humidity ratio <code>w = 0.62198e / (101.325 − e)</code>, mix <code>w = (1−f)wᵢ + fwₒ</code>, then recover vapor pressure and RH at the mixed temperature. Temperature and CO₂ use the same linear mixing fraction.</p><p>Fixed reference states; no ongoing transpiration, heating, CO₂ injection, condensation, wind or ventilation dynamics. Moisture is mixed before calculating RH—outside RH alone does not tell you whether ventilation will remove water.</p></div></details>`;
+    `<div class="lab-workspace"><div class="lab-controls"><span class="lab-eyebrow">YOUR CONTROL</span><label class="lab-slider-label">Roof vent opening <output data-opening>40%</output><input type="range" min="0" max="100" step="1" value="40" data-vent aria-label="Roof vent opening, percent"></label><div class="lab-range-ends"><span>Closed</span><span>Fully open</span></div><fieldset class="lab-choices"><legend>Outside air</legend><button type="button" data-weather="cool" aria-pressed="true"><strong>Cool & dry</strong><span>${temperatureMarkup(16)} · 55% RH</span></button><button type="button" data-weather="warm" aria-pressed="false"><strong>Warm & humid</strong><span>${temperatureMarkup(32)} · 78% RH</span></button></fieldset><p class="lab-control-note">Reference room: ${temperatureMarkup(28)}, 72% RH, 950 ppm CO₂. Outside CO₂: 420 ppm.</p><button type="button" class="lab-reset" data-reset>Reset experiment <span aria-hidden="true">↺</span></button></div><div class="lab-results"><div class="lab-plot lab-coupling-plot" data-diagram></div><div class="lab-metrics" data-metrics></div><p class="lab-insight" data-summary aria-live="polite" aria-atomic="true"></p></div></div><details class="lab-method"><summary>Inside the model <span>Assumptions & equations</span></summary><div><p>This is an illustrative, steady mixing proxy, not a transient facility simulation. Vent opening maps to an outside-air fraction <code>f = 0.75 × opening / 100</code>; that mapping is arbitrary, not a ventilation-rate prediction.</p><p>At a constant 101.325 kPa, saturation vapor pressure is <code>eₛ(T) = 0.61078 exp(17.2694T / (T + 237.3))</code> kPa, with <code>T</code> always in Celsius regardless of the display preference. We convert RH to humidity ratio <code>w = 0.62198e / (101.325 − e)</code>, mix <code>w = (1−f)wᵢ + fwₒ</code>, then recover vapor pressure and RH at the mixed temperature. Temperature and CO₂ use the same linear mixing fraction.</p><p>Fixed reference states; no ongoing transpiration, heating, CO₂ injection, condensation, wind or ventilation dynamics. Moisture is mixed before calculating RH—outside RH alone does not tell you whether ventilation will remove water.</p></div></details>`;
   const input = root.querySelector("[data-vent]");
   function render() {
     const opening = Number(input.value);
@@ -56,8 +62,8 @@ function coupling(container, signal) {
     root.querySelector("[data-metrics]").innerHTML =
       metric(
         "AIR TEMPERATURE",
-        `${temperature.toFixed(1)}<em>°C</em>`,
-        `${signed(temperature - 28)}°C from reference`,
+        temperatureMarkup(temperature),
+        `${temperatureMarkup(temperature - 28, { difference: true, signed: true })} from reference`,
       ) +
       metric(
         "RELATIVE HUMIDITY",
@@ -70,7 +76,7 @@ function coupling(container, signal) {
         `${Math.round(co2 - 950)} ppm from reference`,
       );
     root.querySelector("[data-diagram]").innerHTML =
-      `<svg viewBox="0 0 660 220" role="img" aria-label="A roof vent connects one opening setting to temperature, moisture and carbon dioxide. ${opening}% opening mixes in ${(fraction * 100).toFixed(0)}% outside air."><path class="lab-flow" d="M240 110 H320 M320 110 V43 H420 M320 110 H420 M320 110 V177 H420"/><circle cx="320" cy="110" r="5" class="lab-node-dot"/><rect class="lab-node-main" x="24" y="61" width="216" height="98" rx="14"/><path class="lab-vent-icon" d="M49 106 l18 -16 18 16 M54 106 v22 h26 v-22 M63 115 h9"/><text class="lab-svg-label" x="105" y="98">ROOF VENT</text><text class="lab-svg-value" x="105" y="130">${opening}% open</text><rect class="lab-node" x="420" y="17" width="216" height="52" rx="10"/><rect class="lab-node" x="420" y="84" width="216" height="52" rx="10"/><rect class="lab-node" x="420" y="151" width="216" height="52" rx="10"/><text class="lab-svg-copy" x="440" y="49">Temperature ${temperature.toFixed(1)}°C</text><text class="lab-svg-copy" x="440" y="116">Moisture ${(moisture * 1000).toFixed(1)} g/kg</text><text class="lab-svg-copy" x="440" y="183">CO₂ ${Math.round(co2)} ppm</text></svg><div class="lab-plot-caption"><span class="lab-dot"></span>One action, coupled outcomes <span>${(fraction * 100).toFixed(0)}% outside-air fraction</span></div>`;
+      `<svg viewBox="0 0 660 220" role="img" aria-label="A roof vent connects one opening setting to temperature, moisture and carbon dioxide. ${opening}% opening mixes in ${(fraction * 100).toFixed(0)}% outside air. Resulting air temperature: ${formatTemperature(temperature)}."><path class="lab-flow" d="M240 110 H320 M320 110 V43 H420 M320 110 H420 M320 110 V177 H420"/><circle cx="320" cy="110" r="5" class="lab-node-dot"/><rect class="lab-node-main" x="24" y="61" width="216" height="98" rx="14"/><path class="lab-vent-icon" d="M49 106 l18 -16 18 16 M54 106 v22 h26 v-22 M63 115 h9"/><text class="lab-svg-label" x="105" y="98">ROOF VENT</text><text class="lab-svg-value" x="105" y="130">${opening}% open</text><rect class="lab-node" x="420" y="17" width="216" height="52" rx="10"/><rect class="lab-node" x="420" y="84" width="216" height="52" rx="10"/><rect class="lab-node" x="420" y="151" width="216" height="52" rx="10"/><text class="lab-svg-copy" x="440" y="49">Temperature ${temperatureMarkup(temperature, { svg: true })}</text><text class="lab-svg-copy" x="440" y="116">Moisture ${(moisture * 1000).toFixed(1)} g/kg</text><text class="lab-svg-copy" x="440" y="183">CO₂ ${Math.round(co2)} ppm</text></svg><div class="lab-plot-caption"><span class="lab-dot"></span>One action, coupled outcomes <span>${(fraction * 100).toFixed(0)}% outside-air fraction</span></div>`;
     const observation =
       opening === 0
         ? "The vent is closed: all three values remain at the reference state."
@@ -78,9 +84,17 @@ function coupling(container, signal) {
           ? "This air cools the room and removes moisture, but it also dilutes the enriched CO₂."
           : "This air adds heat and moisture while still diluting CO₂. Opening the vent is not dehumidification in these conditions.";
     root.querySelector("[data-summary]").textContent =
-      `${observation} Outside air carries ${(outsideMoisture * 1000).toFixed(1)} g of water per kg of dry air, compared with ${(initialMoisture * 1000).toFixed(1)} g/kg inside. Compare moisture content, not RH alone.`;
+      `${observation} Air temperature is ${formatTemperature(temperature)}, ${formatTemperature(temperature - 28, { difference: true, signed: true })} from reference. Outside air carries ${(outsideMoisture * 1000).toFixed(1)} g of water per kg of dry air, compared with ${(initialMoisture * 1000).toFixed(1)} g/kg inside. Compare moisture content, not RH alone.`;
   }
   input.addEventListener("input", render, { signal });
+  document.addEventListener(
+    "academy:unitschange",
+    () => {
+      applyTemperatureDisplay(root);
+      render();
+    },
+    { signal },
+  );
   root.querySelectorAll("[data-weather]").forEach((button) =>
     button.addEventListener(
       "click",
