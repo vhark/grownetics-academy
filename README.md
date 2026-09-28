@@ -18,6 +18,25 @@ These are planning and teaching drafts, not claims that every proposed module, k
 - [The Evolution of CEA Control](https://vhark.github.io/grownetics-academy/#/modules/cea-control): published.
 - [Climate, Psychrometrics & CEA Design](https://vhark.github.io/grownetics-academy/#/modules/climate-design?preview=1): work-in-progress draft, available through preview mode.
 
+## Versioned curriculum delivery
+
+The publisher exports **published modules only**, with explicit prerequisite availability, teaching activities, evidence expectations, and independent/school-use boundaries. Draft and planning records are labeled separately; neither becomes an available lesson. `modules/cea-control/teaching.js` is the source-owned teaching supplement for the existing CEA Control lessons.
+
+With Node 22.12 or newer:
+
+```sh
+npm ci
+npx playwright install chromium
+npm test
+npm run curriculum:export -- review-YYYY-MM-DD-1
+```
+
+Choose a new release name for every export. An existing `dist/curriculum/<release>/` directory is never replaced. Each release contains curriculum JSON, the original source outline, teacher/student/presentation resources in HTML and PDF, licensing, and a SHA-256 manifest. Output directories are generated artifacts, not source files.
+
+The separate Grow Journal application installs a complete local release with `npm run curriculum:install -- /absolute/path/to/dist/curriculum/<release>`. Its installer verifies the manifest, records the pinned release, and verifies installed bytes again before building. It does not maintain a second copy of the authored curriculum source.
+
+Release `review-2026-09-28-2` was exported and independently hash-checked during implementation. The PDFs contain selectable text and structural tags; teacher/student samples and the complete 13-page presentation were visually inspected. These checks are not PDF/UA certification, classroom piloting, standards alignment, or a scientific/safety endorsement. Those reviews remain prerequisites for broader educational adoption.
+
 ## Reuse and licensing
 
 - Original curriculum content: **CC BY 4.0**.
