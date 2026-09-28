@@ -4,6 +4,8 @@ Recorded: 2026-09-28.
 
 **Status:** living planning record, not a completed curriculum or approved hardware specification. The mission below records the user's stated direction. Curriculum structure, module families, kits, and sequencing are proposals unless the [decision log](curriculum-decisions.md) explicitly records approval. The user has approved ongoing documentation and the licensing split described in [LICENSE.md](../LICENSE.md).
 
+Companion records: [module-by-module map](curriculum-module-map.md), [From Seed to Sensor teaching guide](pathways/seed-to-sensor.md), and [decision history](curriculum-decisions.md). The user's subsequent instruction to proceed authorizes continued development; the first classroom pilot and hardware configuration remain open.
+
 ## Mission and audience
 
 Use controlled-environment agriculture (CEA) as a living STEM laboratory: students learn science and engineering by observing plants, measuring their environment, building systems, and evaluating evidence.
@@ -61,7 +63,7 @@ Shared projects should allow students to choose different disciplinary emphases:
 - **Climate and resource engineering:** buildings, energy, water, regional design, and economics.
 - **Space agriculture:** constrained resources, growing substrates, and habitat systems.
 
-Mathematics, scientific reasoning, and communication run through every pathway. Specific prerequisites and assessments still need development for each proposed module.
+Mathematics, scientific reasoning, and communication run through every pathway. The [module map](curriculum-module-map.md) expands these families into proposed module specifications, prerequisite relationships, and assessment evidence. They still require educator review and classroom validation; a specification is not a completed or piloted lesson package.
 
 ## Existing academy foundation
 
@@ -167,6 +169,8 @@ The proposed delivery model is freely reusable educational material with optiona
 
 Recommended first pathway: **The Living Laboratory: From Seed to Sensor**, covering observation, fair experiments, basic plant needs, Arduino measurement, and data interpretation. These foundations can support both tent and regolith projects.
 
+Authoring update (2026-09-28): the [detailed pathway guide](pathways/seed-to-sensor.md) develops this shared foundation first, alongside the [curriculum module map](curriculum-module-map.md). Its working assumptions are beginner/middle-school learners and eight 45–60 minute sessions across roughly two to three weeks, with observation time and plant care tracked separately. These are design estimates, not user-selected enrollment or measured teaching times. The manual route does not require an Arduino; hardware-specific outcomes require a checked physical setup and are not credited for reading recorded data alone.
+
 The user has not selected the first pilot. The options discussed are:
 
 - Low-cost Arduino classroom kit.
@@ -181,7 +185,7 @@ Before writing a pilot-specific implementation plan, establish:
 - Grownetics integration interfaces and deployment constraints where relevant.
 - For the regolith project: partner protocol, simulant, species, treatments, measurements, safety approvals, and timing.
 
-These are explicit open decisions, not implied commitments or incomplete implementation tasks. The next curriculum discussion should select the pilot and develop that pathway without treating the entire proposed module library as already approved.
+These are explicit open decisions, not implied commitments or incomplete implementation tasks. Shared curriculum authoring can proceed without selecting a partner-specific pilot. Choosing that pilot and validating the relevant hardware are required before making classroom delivery, purchasing, or integration commitments; the proposed module library is not automatically approved in full.
 
 ## Documentation practice
 

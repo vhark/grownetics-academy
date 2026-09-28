@@ -41,6 +41,16 @@ This log distinguishes explicit user decisions from assistant proposals and open
 - Interpretation: “teaching software” defines which material is covered, not a restriction on how recipients may use MIT-licensed material. The standard MIT permissions include commercial reuse; this is not an education-only license.
 - Mixed files: original instructional prose remains CC BY 4.0 even when stored in a JavaScript source file; covered executable teaching code and examples are MIT. Vendored software retains its own license and copyright notice.
 
+### CUR-004 — Continue curriculum development with shared foundations
+
+- Date: 2026-09-28.
+- Status: Approved to continue development; specific pilot choices remain open.
+- Authority: the user's instruction, “proceed”, following publication of the outline and licensing records.
+- Decision: continue developing and documenting the curriculum rather than wait for a hardware purchase or partner-specific protocol.
+- Authoring choice: develop a [module-by-module map](curriculum-module-map.md) and a detailed [P-01: From Seed to Sensor guide](pathways/seed-to-sensor.md) first. This is the assistant's stated execution choice based on the previously recommended shared foundations, not a claim that the user explicitly selected an Arduino classroom pilot.
+- Working assumptions: beginner/middle-school learners; eight 45–60 minute sessions across roughly two to three weeks; a manual route plus a separately bounded Arduino-assisted extension. Validate these with educators and the eventual reference hardware.
+- Boundary: no new published app modules, classroom-validation claims, hardware purchase specifications, Grownetics product-code license changes, or NASA partner commitments. Module and pathway drafts remain subject to review.
+
 ## Proposals recorded, not approved
 
 ### CUR-P01 — Modules, pathways, and kits are separate layers
@@ -67,6 +77,7 @@ This log distinguishes explicit user decisions from assistant proposals and open
 - Recommendation: develop “The Living Laboratory: From Seed to Sensor” as a reusable beginner pathway; extend the same measurement and scientific-method foundations into the tent and lunar-regolith investigations.
 - Boundary: the first pilot has not been chosen. The outreach opportunity may change sequencing once its requirements are known.
 - Details: [first pathway and open decisions](curriculum-outline.md#proposed-first-pathway-and-unresolved-decisions).
+- Authoring update (2026-09-28): [CUR-004](#cur-004--continue-curriculum-development-with-shared-foundations) records proceeding with the shared-foundation guide as the next writing priority, while keeping the external pilot decision open.
 
 ### CUR-P04 — School-ready modules include more than lessons and quizzes
 
@@ -89,6 +100,15 @@ This log distinguishes explicit user decisions from assistant proposals and open
 | Will hardware design files be published and licensed? | Open; no hardware-design grant made | Ownership, intended design deliverables, and a separate licensing decision |
 
 ## Changes recorded
+
+### 2026-09-28 — Detailed module map and beginner pathway
+
+- Expanded the proposed progression into a [27-module curriculum map](curriculum-module-map.md) with prerequisites, activities, resource needs, assessment evidence, and seven pathway sequences.
+- Developed [P-01: The Living Laboratory: From Seed to Sensor](pathways/seed-to-sensor.md) as an eight-session teaching draft with student templates, a rubric, manual and Arduino-assisted variants, and classroom-pilot review criteria.
+- Kept authoring priority distinct from selecting a school or outreach pilot, selecting hardware, or certifying classroom readiness.
+- Linked the new records from the main outline and repository entry point. Existing online modules and their publication states are unchanged.
+- Reviewed outcome-to-assessment coverage: required the fair-comparison planning sketch for FND-02, allowed accessible tables for FND-04, and separated partial hardware demonstrations from full MSR evidence.
+- Added advanced software reproducibility, experimental-unit/statistical reasoning, PID/look-ahead comparison, and constrained resource optimization to the relevant module briefs; added student privacy and educator source checks to P-01.
 
 ### 2026-09-28 — Initial documentation and licensing record
 

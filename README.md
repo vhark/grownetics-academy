@@ -7,9 +7,11 @@ An educational academy about controlled-environment agriculture, with a developi
 ## Curriculum planning
 
 - [Living curriculum outline](docs/curriculum-outline.md): mission, beginner-to-advanced progression, interest pathways, proposed kits, grow-tent and lunar-regolith projects, teacher adoption materials, and unresolved pilot requirements.
+- [Module-by-module curriculum map](docs/curriculum-module-map.md): proposed modules, prerequisites, activities, assessment evidence, resource needs, and pathway sequences.
+- [From Seed to Sensor teaching guide](docs/pathways/seed-to-sensor.md): the first detailed pathway draft, with eight proposed sessions, manual and Arduino-assisted variants, student templates, and assessment guidance.
 - [Decision log](docs/curriculum-decisions.md): dated approvals, proposals, and open decisions. The first pilot has not been selected.
 
-The outline is a planning document, not a claim that every proposed module, kit, integration, or school standards mapping is complete. Maintain these records as the curriculum develops.
+These are planning and teaching drafts, not claims that every proposed module, kit, integration, or school standards mapping is complete or classroom-tested. The shared beginner pathway is the first detailed authoring priority, not a selection of an external classroom pilot. Maintain these records as the curriculum develops.
 
 ## Existing modules
 
