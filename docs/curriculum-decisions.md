@@ -180,7 +180,7 @@ This log distinguishes explicit user decisions from assistant proposals and open
 ### CUR-017 — Adopt self-hosted interactive courseware with school-hosted journals
 
 - Date: 2026-11-03.
-- Status: Approved architecture and roadmap; the written specification awaits user review before implementation planning.
+- Status: Approved architecture and roadmap; the user reviewed the written specification and authorized implementation planning on 2026-11-03.
 - Authority: the user selected school-hosted primary journal storage, approved the reference-derived courseware foundation, required a later gamification/GrowAdventure module, and directed “proceed” to the written design.
 - Decision: build a self-hosted modular Go service with PostgreSQL and asset storage, a shared Svelte administrator/teacher/student interface, and a Wails 3 desktop client for offline-capable work and native integrations. The existing Academy remains the canonical public curriculum source.
 - Learning engine: adopt Oppia-style guided lesson graphs, H5P-style declarative activity schemas, Open edX-style draft/preview/publish behavior, Moodle-style scoped capability checks, portable course packages, and evidence-led assessment. Use external standards through boundary adapters rather than as canonical internal records.

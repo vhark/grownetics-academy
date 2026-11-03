@@ -2,7 +2,7 @@
 
 Date: 2026-11-03.
 
-Status: the user approved the school-hosted Go/Svelte/Wails architecture, the reference-derived courseware patterns, and the deferred gamification/GrowAdventure roadmap, and directed that this written specification be produced. This specification awaits user review before implementation planning. It does not authorize deployment, domain migration, classroom-validation claims, or connection to real equipment.
+Status: the user reviewed and approved this specification on 2026-11-03 and authorized implementation planning. The architecture, reference-derived courseware patterns, and deferred gamification/GrowAdventure roadmap are approved. This does not authorize deployment, domain migration, classroom-validation claims, or connection to real equipment.
 
 Decision authority: CUR-017 in the [curriculum decision log](../../curriculum-decisions.md). This specification supersedes the static-only journal and deferred-native-wrapper portions of the [2026-09-28 design](2026-09-28-academy-journal-and-shared-world-design.md). Requirements from that design remain in force where this specification does not explicitly replace them.
 
@@ -340,6 +340,18 @@ These are required observable results, not claims of completed implementation.
 | Integration failure | AI, Studio, GrowAdventure, or external-service failure does not corrupt local work or fabricate success |
 | Future gamification | Replayed domain events do not duplicate achievement grants; avatar/client claims alone cannot grant rewards or permissions |
 | Equipment boundary | No course, game, model, journal, or integration path can issue real actuator commands |
+
+## 16. Implementation plan sequence
+
+The first implementation is decomposed into independently testable subsystem plans. Each plan must produce working software and observe its changed surface rather than only compiling scaffolding.
+
+1. **Guided activity studio:** the [detailed implementation plan](../plans/2026-11-03-guided-activity-studio.md) delivers validated course JSON, trusted activity definitions, deterministic Go evaluation, schema-driven editing, learner-equivalent Svelte preview, and browser acceptance tests in a separate `grownetics-courseware` repository.
+2. **School server:** adds PostgreSQL, bootstrap identity, scoped capabilities, immutable course persistence, publication, assignments, and the transactional domain-event outbox.
+3. **Teacher/student web application:** adds authenticated authoring, class assignment, resumable attempts, evidence submissions, rubrics, and attributed feedback.
+4. **Wails journal and desktop:** adds personal records, media, selective submission, portable export, offline cache/outbox, and conflict handling.
+5. **Self-hosted release:** adds Docker deployment, migrations, backup/restore, upgrade/rollback, accessibility review, and operational documentation.
+
+Plant Modeling Studio, gamification/GrowAdventure, citizen science, and institution-requested interoperability adapters require their own later specifications and plans. They are not silently included in the first implementation.
 
 ---
 
