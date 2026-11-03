@@ -79,7 +79,7 @@ This log distinguishes explicit user decisions from assistant proposals and open
 ### CUR-007 — Prioritize Chrome; consider a native wrapper later
 
 - Date: 2026-09-28.
-- Status: Approved.
+- Status: Superseded in part by CUR-017; Wails 3 is selected for the desktop application, while browser compatibility and permission constraints remain relevant.
 - Authority: the user's instruction, “chrome is great, we can eventually wrap a web app if we need to”.
 - Decision: target desktop Chrome for the initial direct-to-folder journal experience. Equal direct-folder support in Safari, Firefox, or on iPads is not a prerequisite.
 - Later option: a native wrapper may be considered if actual deployment needs justify it. No wrapper framework, native implementation, or release commitment is selected now.
@@ -88,7 +88,7 @@ This log distinguishes explicit user decisions from assistant proposals and open
 ### CUR-008 — Separate Academy content, the journal application, and learner files
 
 - Date: 2026-09-28.
-- Status: Approved.
+- Status: Superseded in part by CUR-017; canonical curriculum separation and portable records remain, while the static-only application and local-folder authority are replaced.
 - Authority: the user's confirmation, “Yes, you got it”, of the proposed three-part architecture.
 - Curriculum: retain the existing Academy repository as the conventional teaching site and authoritative source for modules and teacher resources.
 - Application: develop the static Grow Journal in a separate repository, with independent deployment and the existing Academy theme as its default.
@@ -100,7 +100,7 @@ This log distinguishes explicit user decisions from assistant proposals and open
 ### CUR-009 — Approve the local journal lifecycle
 
 - Date: 2026-09-28.
-- Status: Approved.
+- Status: Superseded in part by CUR-017; honest save states, conflict preservation, recovery, and portable export remain, while local files cease to be the school-hosted system of record.
 - Authority: the user's confirmation, “yup, that works”, following the local-save design.
 - Decision: adopt the create/open-folder flow, Markdown and relative attachment layout, autosave with distinct pending/saving/saved states, permission reconnection, and visible save failures described in CUR-P06.
 - Recovery: retain pending work in the open editor and offer reconnection or a recovery download. Detectable external edits pause saving and offer keeping both versions.
@@ -170,12 +170,25 @@ This log distinguishes explicit user decisions from assistant proposals and open
 ### CUR-016 — Approve the combined learner experience for the formal design
 
 - Date: 2026-09-28.
-- Status: Approved design direction; written-specification review remains required.
+- Status: Superseded in part by CUR-017; the combined learner experience remains approved, while application and storage architecture move to the self-hosted courseware specification.
 - Authority: the user's “yes” to carrying the combined learner experience into the formal specification.
 - Decision: adopt the evidence-led learning loop and skill map, Academy/botanical/academic appearances, contextual authored guidance, private-journal/shared-project boundary, and versioned teaching resources described in the [learner experience record](academy-learning-experience.md).
 - Requirement continuity: retain CUR-005's lesson plans, presentations, relevant YouTube links, printables, and complete teacher PDF for every delivered module. Keep accessibility settings independent of rewards and teacher assessment distinct from self-review.
 - Formal record: [Academy journal and shared-world design specification](superpowers/specs/2026-09-28-academy-journal-and-shared-world-design.md).
 - Boundary: this accepts the design direction, not a production implementation, completed teaching packs, a deployment, or permission to connect real equipment. The formal written contract awaits user review before implementation planning.
+
+### CUR-017 — Adopt self-hosted interactive courseware with school-hosted journals
+
+- Date: 2026-11-03.
+- Status: Approved architecture and roadmap; the written specification awaits user review before implementation planning.
+- Authority: the user selected school-hosted primary journal storage, approved the reference-derived courseware foundation, required a later gamification/GrowAdventure module, and directed “proceed” to the written design.
+- Decision: build a self-hosted modular Go service with PostgreSQL and asset storage, a shared Svelte administrator/teacher/student interface, and a Wails 3 desktop client for offline-capable work and native integrations. The existing Academy remains the canonical public curriculum source.
+- Learning engine: adopt Oppia-style guided lesson graphs, H5P-style declarative activity schemas, Open edX-style draft/preview/publish behavior, Moodle-style scoped capability checks, portable course packages, and evidence-led assessment. Use external standards through boundary adapters rather than as canonical internal records.
+- Learner records: the school server is authoritative. Personal journals remain private by default; coursework submission and citizen-science publication are explicit actions. Wails maintains an offline cache and mutation outbox, while portable Markdown plus attachments remains the journal export format.
+- Roadmap: retain first-party Plant Modeling Studio integration and add a required later event-driven gamification module with student/teacher progression and CodeCombat-style GrowAdventure scenarios. Gamification is motivational rather than mastery or authorization and is not first-release scope.
+- Supersedes: the static-only journal, local-folder-as-primary-storage, account-free journal, and deferred-unnamed-native-wrapper portions of CUR-007, CUR-008, CUR-009, and the 2026-09-28 specification. The separate static Grow Journal plan must not be executed unchanged. Curriculum publishing, privacy, evidence, accessibility, and equipment-safety invariants remain in force.
+- Formal record: [self-hosted interactive courseware design](superpowers/specs/2026-11-03-self-hosted-courseware-design.md).
+- Boundary: this approves the architecture for written-specification review, not implementation, deployment, classroom validation, a school pilot, public citizen science, or real-equipment connection.
 
 ## Proposal history
 

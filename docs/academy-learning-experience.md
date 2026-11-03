@@ -1,8 +1,8 @@
 # Academy learner experience
 
-Status: design direction approved on 2026-09-28 in [CUR-016](curriculum-decisions.md#cur-016--approve-the-combined-learner-experience-for-the-formal-design). The [formal written specification](superpowers/specs/2026-09-28-academy-journal-and-shared-world-design.md) awaits user review before implementation planning. No production application or complete teaching pack is claimed by this record.
+Status: the combined learner experience remains approved through [CUR-016](curriculum-decisions.md#cur-016--approve-the-combined-learner-experience-for-the-formal-design). Application and storage architecture are superseded in part by [CUR-017](curriculum-decisions.md#cur-017--adopt-self-hosted-interactive-courseware-with-school-hosted-journals) and the [self-hosted courseware specification](superpowers/specs/2026-11-03-self-hosted-courseware-design.md), which awaits user review before implementation planning. This record remains authoritative for pedagogy, themes, accessibility, guidance, sources, and teacher resources. No production application or complete teaching pack is claimed.
 
-The approved architecture keeps the conventional Academy, private local journal, WorkAdventure-based shared world, and dimensioned facility model distinct. The shared-world editor starts with 2D plan editing and explicit height, elevation, and level data. See [approved decisions](curriculum-decisions.md#approved-decisions) and the [shared-world concept](academy-game-world-concept.md).
+The conventional Academy, personal journal, GrowAdventure shared world, and dimensioned facility model remain separate trust and authority boundaries even though the courseware now has a school-hosted backend. The shared-world editor starts with 2D plan editing and explicit height, elevation, and level data. See the [approved decisions](curriculum-decisions.md#approved-decisions) and [shared-world concept](academy-game-world-concept.md).
 
 ## One learning loop, several places to learn
 
