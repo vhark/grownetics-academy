@@ -10,14 +10,15 @@
 
 ## Execution record — 2026-11-04
 
-Implemented in `/Users/vincehark/Code/grownetics-courseware` on `feature/school-server`, through `99996e9`. The task bodies below retain the original implementation recipe; this execution record and the repository source describe the delivered behavior.
+Implemented in `/Users/vincehark/Code/grownetics-courseware` on `feature/school-server`, through `68e7ac5`. The task bodies below retain the original implementation recipe; this execution record and the repository source describe the delivered behavior.
 
-- Tasks 1–5 completed and passed specification and quality review.
-- Task 6 operation documentation and CI environment are implemented. Final `make test` passed all Go packages and 14 Chromium scenarios.
+- All six tasks and the final whole-server review passed; no remaining actionable review findings.
+- Final `make test` passed all Go packages and 14 Chromium scenarios. `go test -race ./internal/database ./internal/school -count=1` passed, including concurrent initialization of the same fresh database.
 - Actual CLI bootstrap and HTTP smoke passed in a disposable PostgreSQL database: health, secure-session login, create/save/publish/assign, idempotent assignment retry, teacher full content, student answer/tolerance/hint removal, stable assigned content after a later draft, 401/403/409, cross-origin rejection, and logout invalidation.
 - Database inspection found exactly one publication event and one assignment event after retry. The smoke server was stopped and its disposable database removed; development data was retained.
 - Reviewed corrections superseding reference snippets: per-call migration provider with cancellation and parsed connection configuration; isolated database overrides for URL aliases; validated bootstrap email syntax and Unicode password lengths; database-generated timestamps; serialization errors returned rather than panicked; current revisions resolved through course pointers; database failures sanitized as HTTP 500; student projection returns an error rather than panicking.
 - Draft API content must use the route's `courseId`. When importing the example fixture, replace its `courseId` with the newly created course ID before saving.
+- Final review corrections: Goose PostgreSQL session locking serializes migrations across connections; `SaveDraft` accepts the authenticated editor ID and attributes each new revision to that editor, preserving the original course creator. The final live API smoke also verified administrator edits of teacher-created courses.
 - This completes only the school-server subsystem. No production deployment, learner attempts, assessment, teacher/student web UI, Wails synchronization, or event-delivery worker is claimed.
 
 ---
