@@ -346,7 +346,7 @@ These are required observable results, not claims of completed implementation.
 The first implementation is decomposed into independently testable subsystem plans. Each plan must produce working software and observe its changed surface rather than only compiling scaffolding.
 
 1. **Guided activity studio:** the [detailed implementation plan](../plans/2026-11-03-guided-activity-studio.md) delivers validated course JSON, trusted activity definitions, deterministic Go evaluation, schema-driven editing, learner-equivalent Svelte preview, and browser acceptance tests in a separate `grownetics-courseware` repository.
-2. **School server:** adds PostgreSQL, bootstrap identity, scoped capabilities, immutable course persistence, publication, assignments, and the transactional domain-event outbox.
+2. **School server:** the [detailed implementation plan](../plans/2026-11-04-school-server.md) adds PostgreSQL, bootstrap identity, scoped capabilities, immutable course persistence, publication, assignments, and the transactional domain-event outbox.
 3. **Teacher/student web application:** adds authenticated authoring, class assignment, resumable attempts, evidence submissions, rubrics, and attributed feedback.
 4. **Wails journal and desktop:** adds personal records, media, selective submission, portable export, offline cache/outbox, and conflict handling.
 5. **Self-hosted release:** adds Docker deployment, migrations, backup/restore, upgrade/rollback, accessibility review, and operational documentation.
