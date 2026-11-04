@@ -8,6 +8,18 @@
 
 **Tech Stack:** Go 1.27.1, PostgreSQL 18.1, pgx 5.12.0, goose 3.29.0, `golang.org/x/crypto` 0.58.0, Google UUID 1.6.0, Docker Compose for development only, Node.js 25.5.0, Playwright 1.64.1.
 
+## Execution record — 2026-11-04
+
+Implemented in `/Users/vincehark/Code/grownetics-courseware` on `feature/school-server`, through `99996e9`. The task bodies below retain the original implementation recipe; this execution record and the repository source describe the delivered behavior.
+
+- Tasks 1–5 completed and passed specification and quality review.
+- Task 6 operation documentation and CI environment are implemented. Final `make test` passed all Go packages and 14 Chromium scenarios.
+- Actual CLI bootstrap and HTTP smoke passed in a disposable PostgreSQL database: health, secure-session login, create/save/publish/assign, idempotent assignment retry, teacher full content, student answer/tolerance/hint removal, stable assigned content after a later draft, 401/403/409, cross-origin rejection, and logout invalidation.
+- Database inspection found exactly one publication event and one assignment event after retry. The smoke server was stopped and its disposable database removed; development data was retained.
+- Reviewed corrections superseding reference snippets: per-call migration provider with cancellation and parsed connection configuration; isolated database overrides for URL aliases; validated bootstrap email syntax and Unicode password lengths; database-generated timestamps; serialization errors returned rather than panicked; current revisions resolved through course pointers; database failures sanitized as HTTP 500; student projection returns an error rather than panicking.
+- Draft API content must use the route's `courseId`. When importing the example fixture, replace its `courseId` with the newly created course ID before saving.
+- This completes only the school-server subsystem. No production deployment, learner attempts, assessment, teacher/student web UI, Wails synchronization, or event-delivery worker is claimed.
+
 ---
 
 ## Scope and boundaries
@@ -112,7 +124,7 @@ Each test creates and drops its own database and runs the full migration. Tests 
 Run:
 
 ```bash
-export COURSEWARE_DATABASE_URL='postgres://courseware:courseware-dev-only@127.0.0.1:55432/courseware?sslmode=disable'
+export COURSEWARE_DATABASE_URL='postgres://courseware:courseware-dev-only@127.0.0.1:55433/courseware?sslmode=disable'
 docker compose -f compose.dev.yaml up -d --wait db
 go test ./internal/database -run TestMigrationCreatesSchoolTables -count=1
 ```
@@ -132,7 +144,7 @@ services:
       POSTGRES_PASSWORD: courseware-dev-only
       POSTGRES_DB: courseware
     ports:
-      - "127.0.0.1:55432:5432"
+      - "127.0.0.1:55433:5432"
     volumes:
       - courseware-dev-db:/var/lib/postgresql
     healthcheck:
@@ -295,7 +307,7 @@ require (
 Run `go mod tidy`. Replace `Makefile` with:
 
 ```make
-DB_URL ?= postgres://courseware:courseware-dev-only@127.0.0.1:55432/courseware?sslmode=disable
+DB_URL ?= postgres://courseware:courseware-dev-only@127.0.0.1:55433/courseware?sslmode=disable
 
 .PHONY: db-up test build run
 
@@ -1346,7 +1358,7 @@ Start the development database:
 
 ```sh
 docker compose -f compose.dev.yaml up -d --wait db
-export COURSEWARE_DATABASE_URL='postgres://courseware:courseware-dev-only@127.0.0.1:55432/courseware?sslmode=disable'
+export COURSEWARE_DATABASE_URL='postgres://courseware:courseware-dev-only@127.0.0.1:55433/courseware?sslmode=disable'
 export COURSEWARE_DEV_INSECURE_COOKIES=true
 ```
 
