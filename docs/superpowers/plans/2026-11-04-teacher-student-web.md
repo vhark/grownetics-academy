@@ -8,6 +8,16 @@
 
 **Tech Stack:** Existing pinned Go 1.27.1, pgx 5.12.0, goose 3.29.0, PostgreSQL 18.1, Svelte 5, SvelteKit 3.1.1, Vite 8.3.5, TypeScript 6.0.3, and Playwright 1.64.1. No new runtime framework.
 
+## Execution record — 2026-11-07
+
+Implemented on `feature/teacher-student-web` (from `68e7ac5`) through `e42f053`, pushed to the private GitHub origin. Each of the eight tasks passed a specification review and a code-quality review with fixes applied; a final whole-implementation review found no critical or merge-blocking defects.
+
+- Local `make test` at `61ee0d8`: all Go packages ok, `-race` on `internal/database` and `internal/school` ok, 52 Playwright scenarios (23 studio, 29 real-server school including two schools and an unstaffed class).
+- GitHub Actions run 42403971037 at `e42f053` (PostgreSQL 18 service, `postgresql-client`, `make test`): identical results. The first CI run failed only because `go.mod` lacked an indirect `golang.org/x/sys` requirement that the local module cache had masked; `go mod tidy` fixed it.
+- Manual browser walkthrough at 1280px and 390px on a disposable database: teacher author/validate/save/publish/rubric/assign; student start, wrong answer, reload with hint and feedback restored, correct answer, reflection, completion, explicit selection, immutable submission 1; teacher assessment through the API with an exact retry replayed (same assessment ID) and a stale base rejected 409; student feedback view attributed to the reviewer; no horizontal overflow at 390px. Database afterwards: 4 responses, 1 completion event, 1 submission, 1 assessment, 1 assessment event. The server, tab, and database were removed afterwards.
+- Reviewed corrections superseding the task text: actionable `storeError` sentinels for every conflict/not-found path; attempt payload bounds (NUL, 10000 runes, numeric literal/exponent limits) before persistence; receipts without course content; `SaveDraft`/attempt editor attribution; Goose session locking; `identity.Require` returns `(bool, error)` and database outages surface as sanitized 500; unknown `/api/...` paths return JSON 404; anti-framing headers on the app document; `catalog.go` is covered by `http_learning_test.go` rather than a separate file; submission bodies up to 8 MiB; teacher review list capped at the latest 200.
+- Accepted limitations: a teacher who assigns needs both `course.edit` and `course.assign`; immutability is enforced by the application rather than database guards; the student and teacher school specs share one worker-scoped database per run; no production deployment, journals/media, automated reflective grading, or scientific review is claimed.
+
 ## Baseline and boundaries
 
 - Repository: `/Users/vincehark/Code/grownetics-courseware`.
@@ -41,7 +51,7 @@
 | `internal/school/submissions.go`, `submissions_test.go` | Intentional selected evidence snapshots and revisions |
 | `internal/school/assessments.go`, `assessments_test.go` | Teacher review, rubric scoring, attributed history |
 | `internal/school/http.go`, `http_learning.go`, `http_learning_test.go` | Existing session/capability middleware plus new resource routes |
-| `internal/school/catalog.go`, `catalog_test.go` | Teacher courses, published revision history, class membership discovery, current user |
+| `internal/school/catalog.go` (covered by `http_learning_test.go`) | Teacher courses, published revision history, class membership discovery, current user |
 | `internal/webui/handler.go`, `handler_test.go` | Shared static asset serving and SPA fallback without API fallback |
 | `cmd/server/main.go`, `cmd/studio/main.go`, `cmd/studio/main_test.go` | Mount shared web handler; preserve studio loopback restriction |
 | `web/src/lib/api.ts`, `types.ts`, `school-api.ts` | Shared HTTP errors and explicit school contracts |
